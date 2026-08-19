@@ -2,7 +2,10 @@
 
 A modern, user-friendly Persian Jalali reminder website with integrated reminder system. Manage your events, track important dates, and never miss a deadline.
 
-[View WebSite](https://hctilg.github.io/Reminder/)
+[
+![Recurring Reminder Preview](screenshot/recurring.png)
+![Once Reminder Preview](screenshot/once.png)
+](https://hctilg.github.io/Reminder/)
 
 ## Features
 
@@ -20,4 +23,4 @@ A modern, user-friendly Persian Jalali reminder website with integrated reminder
 
 ## License
 
-- [MIT License](./LICENSE)
+- [MIT License](LICENSE)
