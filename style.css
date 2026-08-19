@@ -500,6 +500,7 @@ animation: pulse 1.8s ease-in-out infinite;
   background: var(--surface-3);
   padding: 1px 8px;
   border-radius: 6px;
+  direction: ltr;
   color: var(--color-soft);
   margin: 0 0 7px;
 }
