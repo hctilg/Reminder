@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=7"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Persian Jalali Reminder - Track dates, manage events, and set reminders using the Jalali calendar system.</title>
+    <meta name="description" content="Persian Jalali Reminder. Track dates, manage events, and set reminders using the Jalali calendar system."/>
+    <meta name="keywords" content="Jalali calendar, Persian calendar, reminder, event manager, تقویم جلالی, یادآور"/>
+
+    <meta name="author" content="Mahoor Nemati"/>
+
+    <meta name="robots" content="index,follow"/>
+    <link rel="canonical" href="https://hctilg.github.io/Reminder"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Persian Jalali Reminder"/>
+    <meta property="og:url" content="https://hctilg.github.io/Reminder"/>
+    <meta property="og:title" content="Persian Jalali Reminder | FREE & OPEN SOURCE"/>
+    <meta property="og:description" content="Persian Jalali Reminder. Track dates, manage events, and set reminders using the Jalali calendar system."/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="theme-color" content="#12121f"/>
+    <link rel="stylesheet" href="style.css">
+  </head>
+<body>
+<header class="app-header">
+  <div class="header-text">
+    <h1>یادآور</h1>
+    <p>وب اپلیکیشن رایگان و اوپن سورس یادآور رویدادها به تاریخ جلالی.</p>
+  </div>
+  <div class="now-badge">
+    <span>اکنون</span>
+    <b id="nowLabel">—</b>
+  </div>
+</header>
+
+<main>
+  <section class="panel add-panel">
+    <h2>افزودن رویداد تازه</h2>
+
+    <div class="field">
+      <label for="titleInput">عنوان رویداد</label>
+      <input id="titleInput" type="text" placeholder="مثلاً: پرداخت قبض برق" maxlength="80" />
+    </div>
+
+    <div class="field">
+      <label>نوع رویداد</label>
+      <div class="type-toggle">
+        <button type="button" class="type-btn active" data-type="once">فقط یک‌بار</button>
+        <button type="button" class="type-btn" data-type="recurring">هر بار</button>
+      </div>
+    </div>
+
+    <div id="onceSection" class="type-section">
+      <div class="field">
+        <label>تاریخ (تقویم جلالی)</label>
+        <div class="jalali-picker">
+          <div class="jalali-nav">
+            <button type="button" id="prevMonthBtn">ماه قبل</button>
+            <div class="jalali-month-year">
+              <select id="jalaliMonthSelect"></select>
+              <select id="jalaliYearSelect"></select>
+            </div>
+            <button type="button" id="nextMonthBtn">ماه بعد</button>
+          </div>
+          <div class="jalali-weekdays">
+            <span>ش</span>
+            <span>ی</span>
+            <span>د</span>
+            <span>س</span>
+            <span>چ</span>
+            <span>پ</span>
+            <span>ج</span>
+          </div>
+          <div id="jalaliDaysGrid" class="jalali-days-grid"></div>
+        </div>
+        <p class="selected-date-label" id="selectedDateLabel">هنوز روزی انتخاب نشده — بازه مجاز از امروز تا دو سال آینده است.</p>
+      </div>
+      <div class="field">
+        <label for="timeInput">ساعت</label>
+        <input id="timeInput" type="time" value="12:00" />
+      </div>
+    </div>
+
+    <div id="recurringSection" class="type-section hidden">
+      <div class="cron-presets">
+        <button type="button" data-cron="* * * * */5">هر ۵ دقیقه</button>
+        <button type="button" data-cron="* * * * 0">هر ساعت</button>
+        <button type="button" data-cron="* * * 9 0">هر روز، ۹ صبح</button>
+        <button type="button" data-cron="* * * 21 0">هر روز، ۹ شب</button>
+        <button type="button" data-cron="1 * * 8 0">دوشنبه‌ها، ۸ صبح</button>
+        <button type="button" data-cron="* * 1 0 0 ">اول هر ماه</button>
+      </div>
+      <div class="field">
+        <label for="cronInput">عبارت کرون</label>
+        <input id="cronInput" class="mono" type="text" dir="ltr" placeholder="* * * * */5" />
+      </div>
+      <p class="hint">
+        ترتیب فیلدها: <b>دقیقه</b>(۰-۵۹) <b>ساعت</b>(۰-۲۳) <b>روزِ‌ماه</b>(۱-۳۱) <b>ماه</b>(۱-۱۲) <b>روزِ‌هفته</b>(۰=یکشنبه … ۶=شنبه)<br/>
+        مقادیر مجاز: <span class="mono">*</span> همه، <span class="mono" dir="ltr">*/n</span> هر n واحد، <span class="mono">a-b</span> بازه، <span class="mono">a,b,c</span> فهرست.
+      </p>
+    </div>
+
+    <p id="formError" class="form-error hidden"></p>
+    <button id="addBtn" class="primary-btn">افزودن رویداد</button>
+  </section>
+
+  <section class="panel list-panel">
+    <h2>رویدادها</h2>
+    <div id="emptyState" class="empty-state">هنوز رویدادی ثبت نشده. یکی از بالا اضافه کن.</div>
+    <ul id="eventList" class="event-list"></ul>
+  </section>
+</main>
+
+    <footer>
+      <p>ذخیره‌سازی تمام رویدادها تنها در مرورگر محلی کاربر انجام میشه و اطلاعات به جایی فرستاده نمیشه.</p>
+      <p>ساخته شده توسط <a href="https://github.com/hctilg/Reminder">ماهور نعمتی</a>.</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
