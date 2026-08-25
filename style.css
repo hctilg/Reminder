@@ -472,6 +472,20 @@ animation: pulse 1.8s ease-in-out infinite;
   transition: stroke-dashoffset .3s;
 }
 
+.ring-fg.state-white {
+  stroke: var(--white-status);
+}
+
+.ring-fg.state-green {
+  stroke: var(--green);
+  filter: drop-shadow(0 0 4px rgba(76, 208, 138, 0.6));
+}
+
+.ring-fg.state-red {
+  stroke: var(--red);
+  filter: drop-shadow(0 0 4px rgba(232, 92, 92, 0.5));
+}
+
 .event-body {
   flex: 1 1 auto;
   min-width: 0;
@@ -570,15 +584,5 @@ footer a {
 
   .jalali-month-year {
     flex-direction: row;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dial-ring {
-    animation: none;
-  }
-
-  .status-orb.green{
-    animation: none;
   }
 }
