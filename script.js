@@ -570,6 +570,38 @@ const deleteEvent = id => {
 }
 
 /**
+ * Notifications
+ */
+
+const ensureNotificationPermission = () => {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+const sendEventNotification = title => {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  try {
+    const notif = new Notification(title, {
+      body: 'رویداد شما فرا رسیده است.',
+      requireInteraction: true
+    });
+  } catch (e) {}
+}
+
+var notifiedOnceIds = new Set();
+
+const notifyOnceIfDue = ev => {
+  if (notifiedOnceIds.has(ev.id)) return;
+  notifiedOnceIds.add(ev.id);
+  sendEventNotification(ev.title);
+}
+
+ensureNotificationPermission();
+
+/**
  * Rendering event list
  */
 
@@ -599,6 +631,7 @@ const getRecurringTiming = (ev, now) => {
   } else if (cache.fields && cache.next && now.getTime() >= cache.next.getTime()) {
     cache.prev = cache.next;
     cache.next = nextOccurrence(cache.fields, now);
+    sendEventNotification(ev.title);
   }
 
   return cache;
@@ -625,9 +658,19 @@ const renderEvents = () => {
 
     if (ev.type === 'once'){
       var status = computeOnceStatus(ev, now);
-      var orb = document.createElement('div');
-      orb.className = 'status-orb ' + status;
-      li.appendChild(orb);
+
+      if (status === 'green') notifyOnceIfDue(ev);
+
+      var stateClass = status === 'gray' ? 'state-white' : (status === 'green' ? 'state-green' : 'state-red');
+      var ringWrapOnce = document.createElement('div');
+      ringWrapOnce.className = 'ring-wrap';
+      var circumferenceOnce = 2 * Math.PI * 17;
+      ringWrapOnce.innerHTML =
+        '<svg width="42" height="42" viewBox="0 0 42 42">' +
+          '<circle class="ring-bg" cx="21" cy="21" r="17"></circle>' +
+          '<circle class="ring-fg ' + stateClass + '" cx="21" cy="21" r="17" stroke-dasharray="' + circumferenceOnce + '" stroke-dashoffset="0"></circle>' +
+        '</svg>';
+      li.appendChild(ringWrapOnce);
 
       var body = document.createElement('div');
       body.className = 'event-body';
@@ -637,8 +680,12 @@ const renderEvents = () => {
       var metaEl = document.createElement('div');
       metaEl.className = 'event-meta';
       var d = new Date(ev.timestamp);
-      var statusText = status === 'gray' ? 'در انتظار' : (status === 'green' ? 'همین الان' : 'گذشته');
-      metaEl.innerHTML = '<span>' + jalaliDateTimeLabel(d) + '</span><span>وضعیت: ' + statusText + '</span>';
+      var statusText = status === 'gray'
+        ? ('زمان باقی‌مانده: ' + formatDuration(ev.timestamp - now.getTime()))
+        : (status === 'green'
+          ? 'همین الان'
+          : ('زمان گذشته: ' + formatDuration(now.getTime() - ev.timestamp)));
+      metaEl.innerHTML = '<span>' + jalaliDateTimeLabel(d) + '</span><span>' + statusText + '</span>';
       body.appendChild(titleEl);
       body.appendChild(metaEl);
       li.appendChild(body);
